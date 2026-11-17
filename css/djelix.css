@@ -10,6 +10,7 @@
   --rosa: #FFB4C2;
   --papier: #FAF4F1;
   --tinte: #16090F;
+  --rand: 2px solid #000;
 
   /* Rollen, je Kapitel neu gesetzt */
   --ground: var(--orange);
@@ -134,7 +135,7 @@ html.gl .sky-0, html.gl .sky-1, html.gl .sky-3, html.gl .sky-4 { background: non
 .ch-z { --ground: var(--rosa); --ink: var(--tinte); --accent: var(--tinte); --accent-ink: var(--rosa); background: var(--rosa); color: var(--tinte); }
 
 /* Fenster */
-.win { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--w-bg); color: var(--w-ink); }
+.win { position: relative; display: flex; flex-direction: column; min-width: 0; background: var(--w-bg); color: var(--w-ink); border: var(--rand); }
 .win--papier { --w-bg: var(--papier); --w-ink: var(--tinte); --w-bar: var(--tinte); --w-bar-ink: var(--papier); }
 .win--rosa { --w-bg: var(--rosa); --w-ink: var(--tinte); --w-bar: var(--rot); --w-bar-ink: var(--papier); }
 .win--orange { --w-bg: var(--orange); --w-ink: var(--tinte); --w-bar: var(--tinte); --w-bar-ink: var(--orange); }
@@ -193,7 +194,7 @@ html.gl .sky-0, html.gl .sky-1, html.gl .sky-3, html.gl .sky-4 { background: non
 .termine__kopf { grid-column: 1 / span 7; align-self: start; }
 .termine__kopf .win__body { display: grid; gap: 0.5rem; padding-block: clamp(1.25rem, 2.4vw, 2.25rem); }
 .termine__liste { grid-column: 1 / span 7; display: grid; gap: var(--gap); }
-.termine__liste li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; padding: 0.8rem 1rem; background: var(--papier); color: var(--tinte); font-weight: 600; }
+.termine__liste li { display: grid; grid-template-columns: auto 1fr; gap: 1rem; padding: 0.8rem 1rem; background: var(--papier); border: var(--rand); color: var(--tinte); font-weight: 600; }
 .termine__liste time { font-variant-numeric: tabular-nums; }
 .termine__frei { grid-column: 8 / -1; align-self: end; }
 .termine__frei .win__body { display: grid; gap: 1rem; justify-items: start; }
@@ -203,7 +204,7 @@ html.gl .sky-0, html.gl .sky-1, html.gl .sky-3, html.gl .sky-4 { background: non
 .wunsch__grid { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(24px, 4vw, 72px); align-items: end; }
 .felder { display: grid; gap: 1.1rem; }
 .feld { display: grid; gap: 0.35rem; font-weight: 600; font-size: var(--step-small); }
-.feld input, .feld textarea { font: 500 var(--step-body)/1.45 var(--font-text); color: var(--tinte); background: #fff; border: 2px solid var(--tinte); border-radius: 0; padding: 0.8rem 0.9rem; width: 100%; min-width: 0; }
+.feld input, .feld textarea { font: 500 var(--step-body)/1.45 var(--font-text); color: var(--tinte); background: #fff; border: var(--rand); border-radius: 0; padding: 0.8rem 0.9rem; width: 100%; min-width: 0; }
 .feld textarea { resize: vertical; }
 .feld input:focus-visible, .feld textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 0; }
 .senden { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.25rem; }
