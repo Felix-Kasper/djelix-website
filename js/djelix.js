@@ -100,21 +100,30 @@
     document.head.append(s);
   });
 
-  /* Termine aus config.js */
+  /* Termine: kommen aus JARVIS (über CFG.api), config.js ist nur Rückfall */
   const heute = new Date(); heute.setHours(0, 0, 0, 0);
-  const kommend = (CFG.termine || []).map((t) => ({ ...t, d: new Date(t.datum + 'T12:00:00') })).filter((t) => !isNaN(t.d) && t.d >= heute).sort((a, b) => a.d - b.d);
-  if (kommend.length) {
+  const zeigeTermine = (liste) => {
+    const kommend = (liste || []).map((t) => ({ ...t, d: new Date(t.datum + 'T12:00:00') })).filter((t) => !isNaN(t.d) && t.d >= heute).sort((a, b) => a.d - b.d);
+    if (!kommend.length) return false;
     const fmt = (d) => d.toLocaleDateString('de-AT', { weekday: 'short', day: '2-digit', month: '2-digit' }).replace(',', '');
     const ort = (t) => [t.ort, t.stadt].filter(Boolean).join(', ');
     $('[data-termin-datum]').textContent = fmt(kommend[0].d);
     $('[data-termin-ort]').textContent = ort(kommend[0]);
-    const liste = $('#termine-liste');
-    kommend.slice(1, 6).forEach((t) => { const li = document.createElement('li'); const tm = document.createElement('time'); tm.dateTime = t.datum; tm.textContent = fmt(t.d); const sp = document.createElement('span'); sp.textContent = ort(t); li.append(tm, sp); liste.append(li); });
-    if (kommend.length > 1) liste.hidden = false;
-  }
-  if (CFG.instagram) { const a = document.createElement('a'); a.href = CFG.instagram; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Instagram'; $('#fuss-links').append(' · ', a); }
+    const ul = $('#termine-liste'); ul.textContent = '';
+    kommend.slice(1, 6).forEach((t) => { const li = document.createElement('li'); const tm = document.createElement('time'); tm.dateTime = t.datum; tm.textContent = fmt(t.d); const sp = document.createElement('span'); sp.textContent = ort(t); li.append(tm, sp); ul.append(li); });
+    ul.hidden = kommend.length < 2;
+    return true;
+  };
+  zeigeTermine(CFG.termine);
+  if (CFG.api) fetch(CFG.api, { headers: { Accept: 'application/json' } }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && Array.isArray(j.termine) && j.termine.length) zeigeTermine(j.termine); }).catch(() => {});
 
-  /* Formulare: Anfrage und Liedwunsch gehen per E-Mail raus */
+  /* Formulare: Anfrage und Liedwunsch landen in JARVIS, Anfragen zusätzlich per Mail */
+  const sende = async (url, daten) => {
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(daten) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || String(j.success) === 'false' || j.ok === false) throw new Error(j.error || j.message || r.status);
+    return true;
+  };
   $$('[data-formular]').forEach((form) => {
     const art = form.dataset.formular, knopf = form.querySelector('button[type=submit]'), status = form.querySelector('.status');
     const melde = (t, fehler) => { status.textContent = t; status.classList.toggle('is-fehler', !!fehler); };
@@ -125,24 +134,21 @@
       delete daten._honey;
       if (art === 'booking') {
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(daten.email || '')) { melde('Bitte eine gültige E-Mail eintragen.', true); form.email.focus(); return; }
-        daten._subject = 'Booking-Anfrage über die Website';
-        daten._replyto = daten.email;
-      } else {
-        if (!(daten.song || '').trim()) { melde('Bitte einen Song eintragen.', true); form.song.focus(); return; }
-        daten._subject = 'Liedwunsch: ' + daten.song.slice(0, 80);
-      }
-      daten._template = 'box';
-      if (!CFG.formular) { melde('Das Formular ist noch nicht eingerichtet.', true); return; }
+      } else if (!(daten.song || '').trim()) { melde('Bitte einen Song eintragen.', true); form.song.focus(); return; }
+      const wege = [];
+      if (CFG.api) wege.push(sende(CFG.api, { art, ...daten }));
+      if (art === 'booking' && CFG.formular) wege.push(sende(CFG.formular, { ...daten, _subject: 'Booking-Anfrage über die Website', _replyto: daten.email, _template: 'box' }));
+      if (!wege.length) { melde('Das Formular ist noch nicht eingerichtet.', true); return; }
       knopf.disabled = true; melde('Wird gesendet …');
-      try {
-        const r = await fetch(CFG.formular, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(daten) });
-        const j = await r.json().catch(() => ({}));
-        if (!r.ok || String(j.success) === 'false') throw new Error(j.message || r.status);
+      const erg = await Promise.allSettled(wege);
+      knopf.disabled = false;
+      if (erg.some((x) => x.status === 'fulfilled')) {
         melde(art === 'booking' ? 'Danke. Die Anfrage ist angekommen, Antwort kommt per Mail.' : 'Danke, der Wunsch ist angekommen.');
-        if (art === 'booking') form.email.value = ''; else form.reset();
-      } catch {
-        melde('Senden hat nicht geklappt. Bitte später noch einmal versuchen.', true);
-      } finally { knopf.disabled = false; }
+        if (art === 'booking') form.email.value = ''; else form.song.value = '';
+      } else {
+        const zuViel = erg.some((x) => String(x.reason && x.reason.message).includes('Zu viele'));
+        melde(zuViel ? 'Kurz durchatmen, gleich wieder probieren.' : 'Senden hat nicht geklappt. Bitte später noch einmal versuchen.', true);
+      }
     });
   });
 
@@ -203,7 +209,7 @@
   /* Szenen */
   const S = window.Scenes = window.Scenes || {};
   S.hero = (root) => Stage.scene(root, {
-    hold: 1.25, phone: { hold: 1 },
+    hold: 0.85, phone: { hold: 0.7 },
     build(tl, { q }) {
       tl.to(q('.hero__copy')[0], { yPercent: 14, autoAlpha: 0, duration: 0.16 }, 0);
       tl.to(q('.wall')[0], { scale: 22, ease: 'power2.in', duration: 0.8 }, 0.03);

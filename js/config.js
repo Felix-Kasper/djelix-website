@@ -1,12 +1,12 @@
 /* Hier trägst du alles ein. Nur diese Datei ändern, dann Commit und Push. */
 window.DJELIX = {
-  // Wohin Anfragen und Liedwünsche gehen. Nach der ersten Anfrage schickt FormSubmit eine Bestätigungsmail.
-  // Danach bekommst du eine Zufallsadresse statt der Mail, die kannst du hier eintragen.
+  // Anfragen, Liedwünsche und Termine laufen über JARVIS. Nicht ändern.
+  api: 'https://rfjvraagaqsjeuopspvl.supabase.co/functions/v1/djelix',
+  // Booking-Anfragen gehen zusätzlich als Mail raus (FormSubmit). Nach der ersten Anfrage kommt eine
+  // Bestätigungsmail, danach gibt es eine Zufallsadresse, die hier die Mail ersetzen kann.
   formular: 'https://formsubmit.co/ajax/kasper_news@outlook.com',
   soundcloud: 'https://soundcloud.com/djelix1',
-  instagram: '',   // ganzer Link, leer = unsichtbar
-  // Auftritte. Vergangene verschwinden von selbst. Beispiel:
-  // { datum: '2026-12-19', ort: 'Sixty Twenty', stadt: 'Innsbruck' },
+  // Termine trägst du in JARVIS ein (DJ, Termine). Die Liste hier ist nur der Rückfall, falls JARVIS nicht antwortet.
   termine: [
   ],
 };

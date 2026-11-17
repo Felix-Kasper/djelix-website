@@ -39,13 +39,13 @@ vec3 sunsetSky(vec2 p, float y0){
 }
 vec3 sunset(vec2 p, float a){
   float y0=-.16;
-  vec2 sun=vec2(-.06*a,y0+.075);
+  vec2 sun=vec2(-.06*a,y0+.15-.09*smoothstep(0.,18.,T));
   float d=length(p-sun);
   vec3 c;
   if(p.y>y0){
     c=sunsetSky(p,y0);
     /* Wolkenbaender, von unten angeleuchtet */
-    float band=fbm(vec2(p.x*1.5+T*.006,p.y*8.5-T*.002));
+    float band=fbm(vec2(p.x*1.5+T*.022,p.y*8.5-T*.006));
     float m=smoothstep(.46,.68,band)*smoothstep(y0-.02,y0+.08,p.y)*(1.-smoothstep(.2,.42,p.y));
     float lit=smoothstep(.0,.55,1.-length(p-sun)*1.3);
     c=mix(c,mix(hex(120.,28.,70.),hex(255.,150.,70.),lit),m*.85);
@@ -65,15 +65,15 @@ vec3 sunset(vec2 p, float a){
   } else {
     float dd=y0-p.y;
     float w=1./(dd+.05);
-    float n=fbm3(vec2(p.x*w*1.1,w*2.2+T*.25));
-    float n2=noise(vec2(p.x*w*5.,w*9.+T*.6));
+    float n=fbm3(vec2(p.x*w*1.1,w*2.2+T*.42));
+    float n2=noise(vec2(p.x*w*5.,w*9.+T*1.));
     vec2 q=vec2(p.x+(n-.5)*dd*.55,y0+dd*1.35+(n2-.5)*dd*.12);
     c=sunsetSky(q,y0)*.8;
     c=mix(c,hex(70.,22.,58.),smoothstep(.0,.42,dd)*.75);
     /* Sonnenbahn auf dem Wasser */
     float wid=.05+dd*.62;
     float path=exp(-pow((p.x-sun.x)/wid,2.));
-    float glit=smoothstep(.42,.74,noise(vec2(p.x*w*7.,w*15.+T*1.1)));
+    float glit=smoothstep(.42,.74,noise(vec2(p.x*w*7.,w*15.+T*1.8)));
     c+=hex(255.,176.,84.)*path*glit*1.25*(1.-smoothstep(.1,.42,dd)*.45);
     c+=hex(255.,120.,50.)*path*.2;
     /* Spiegelung des Felsens */
