@@ -170,8 +170,8 @@ html.gl .sky-0, html.gl .sky-1, html.gl .sky-3, html.gl .sky-4 { background: non
 /* Sound */
 .sound { display: grid; grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); column-gap: clamp(24px, 4vw, 72px); padding: clamp(96px, 16svh, 180px) var(--m) clamp(64px, 12svh, 140px); align-items: center; }
 .sound__platte { width: min(100%, 78svh); }
-.platte { aspect-ratio: 1; background: var(--tinte) !important; display: block !important; flex: none !important; }
-.platte > img { position: absolute; inset: 3%; width: 94%; height: 94%; object-fit: contain; }
+.platte { position: relative; aspect-ratio: 1; margin: 0; }
+.platte > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 .platte__dreh { will-change: transform; }
 .platte__glanz { mix-blend-mode: screen; opacity: 0.5; pointer-events: none; }
 .sound__text { display: flex; flex-direction: column; gap: clamp(1.1rem, 2vw, 1.75rem); min-width: 0; }
