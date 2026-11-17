@@ -206,7 +206,9 @@ html.gl .sky-0, html.gl .sky-1, html.gl .sky-3, html.gl .sky-4 { background: non
 .feld { display: grid; gap: 0.35rem; font-weight: 600; font-size: var(--step-small); }
 .feld input, .feld textarea { font: 500 var(--step-body)/1.45 var(--font-text); color: var(--tinte); background: #fff; border: var(--rand); border-radius: 0; padding: 0.8rem 0.9rem; width: 100%; min-width: 0; }
 .feld textarea { resize: vertical; }
-.feld input:focus-visible, .feld textarea:focus-visible { outline: 3px solid var(--orange); outline-offset: 0; }
+.feld input, .feld textarea { caret-color: var(--orange); transition: outline-offset 160ms var(--ease-out, ease-out); }
+.feld input::placeholder, .feld textarea::placeholder { color: color-mix(in srgb, var(--tinte) 58%, #fff); opacity: 1; }
+.feld input:focus, .feld textarea:focus { outline: 3px solid #000; outline-offset: 3px; }
 .senden { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.25rem; }
 .status { font-weight: 600; }
 .status.is-fehler { color: var(--rot); }
