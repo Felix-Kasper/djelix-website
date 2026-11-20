@@ -1,4 +1,4 @@
-/* DJELIX: Seite, Himmel, Player, Formulare. */
+/* KASPR: Seite, Himmel, Player, Formulare. */
 (() => {
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -86,7 +86,7 @@
     const box = $('#sc'), karte = box.closest('.sc');
     const url = 'https://w.soundcloud.com/player/?url=' + encodeURIComponent(CFG.soundcloud || 'https://soundcloud.com/djelix1') + '&color=%23f2541b&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false';
     const f = document.createElement('iframe');
-    f.src = url; f.title = 'DJELIX auf SoundCloud'; f.allow = 'autoplay'; f.loading = 'eager';
+    f.src = url; f.title = 'DJ KASPR auf SoundCloud'; f.allow = 'autoplay'; f.loading = 'eager';
     box.replaceChildren(f); karte.classList.add('is-player');
     const s = document.createElement('script');
     s.src = 'https://w.soundcloud.com/player/api.js';

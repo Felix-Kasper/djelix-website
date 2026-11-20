@@ -1,4 +1,4 @@
-/* DJELIX: der Himmel hinter der Wand.
+/* KASPR: der Himmel hinter der Wand.
    Ein einziger Fragment-Shader rechnet die ganze Nacht:
    H = 0 Sonnenuntergang am Meer, 1 Nacht mit Mond, 2 Club in Rot, 3 Club in Schwarz, 4 Sonnenaufgang in den Bergen.
    Sky.create(canvas) liefert { render(hour, seconds), resize(scale), gl } oder null ohne WebGL. */

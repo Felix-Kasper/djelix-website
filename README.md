@@ -1,4 +1,4 @@
-# DJELIX Website
+# DJ KASPR Website
 
 Statische Seite ohne Build-Schritt, für GitHub Pages.
 
